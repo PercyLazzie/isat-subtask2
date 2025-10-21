@@ -1,4 +1,4 @@
- This C++ program is a Number Base Converter that allows a user to convert numbers between decimal, binary, and hexadecimal formats. It's designed with a menu-driven command-line interface, meaning the user interacts by typing numbers to select options from a displayed menu.
+This C++ program is a Number Base Converter that allows a user to convert numbers between decimal, binary, and hexadecimal formats. It's designed with a menu-driven command-line interface, meaning the user interacts by typing numbers to select options from a displayed menu.
 Here's a breakdown of its key components and functionality:
 Core Conversion Functions:
 decimalToBinary(int decimalNum): Takes a decimal integer and returns its binary representation as a std::string. It uses repeated division by 2 and collects the remainders.
