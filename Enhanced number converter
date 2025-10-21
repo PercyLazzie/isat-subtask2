@@ -1,0 +1,199 @@
+#include <iostream> // For input/output operations (cin, cout)
+#include <string>   // For using string manipulation
+#include <algorithm> // For std::reverse
+#include <vector>   // Not strictly needed for this version, but often useful
+#include <cmath>    // For pow (though bitwise operations are often faster for binary)
+#include <iomanip>  // For std::hex, std::dec (for output formatting)
+#include <random>   // For random number generation
+#include <limits>   // For numeric_limits (to clear cin buffer)
+
+// Function to convert Decimal to Binary
+std::string decimalToBinary(int decimalNum) {
+    if (decimalNum < 0) {
+        return "Invalid input: Please enter a non-negative integer.";
+    }
+    if (decimalNum == 0) {
+        return "0";
+    }
+    std::string binaryString = "";
+    while (decimalNum > 0) {
+        binaryString = (decimalNum % 2 == 0 ? "0" : "1") + binaryString;
+        decimalNum /= 2;
+    }
+    return binaryString;
+}
+
+// Function to convert Binary to Decimal
+int binaryToDecimal(const std::string& binaryStr) {
+    int decimalNum = 0;
+    int power = 0;
+    for (int i = binaryStr.length() - 1; i >= 0; i--) {
+        if (binaryStr[i] == '1') {
+            decimalNum += std::pow(2, power);
+        } else if (binaryStr[i] != '0') {
+            // Handle invalid characters in binary string
+            return -1; // Indicate error
+        }
+        power++;
+    }
+    return decimalNum;
+}
+
+// Function to convert Decimal to Hexadecimal
+std::string decimalToHexadecimal(int decimalNum) {
+    if (decimalNum < 0) {
+        return "Invalid input: Please enter a non-negative integer.";
+    }
+    if (decimalNum == 0) {
+        return "0";
+    }
+    std::string hexString = "";
+    char hexDigits[] = "0123456789ABCDEF";
+    while (decimalNum > 0) {
+        hexString = hexDigits[decimalNum % 16] + hexString;
+        decimalNum /= 16;
+    }
+    return hexString;
+}
+
+// Function to convert Hexadecimal to Decimal
+int hexadecimalToDecimal(const std::string& hexStr) {
+    int decimalNum = 0;
+    int power = 0;
+    for (int i = hexStr.length() - 1; i >= 0; i--) {
+        char c = std::toupper(hexStr[i]); // Convert to uppercase for easier comparison
+        int digitValue;
+        if (c >= '0' && c <= '9') {
+            digitValue = c - '0';
+        } else if (c >= 'A' && c <= 'F') {
+            digitValue = c - 'A' + 10;
+        } else {
+            // Handle invalid hexadecimal characters
+            return -1; // Indicate error
+        }
+        decimalNum += digitValue * std::pow(16, power);
+        power++;
+    }
+    return decimalNum;
+}
+
+// Function to display the menu
+void displayMenu() {
+    std::cout << "\n--- Number Converter Menu ---" << std::endl;
+    std::cout << "1. Convert Decimal to Binary" << std::endl;
+    std::cout << "2. Convert Binary to Decimal" << std::endl;
+    std::cout << "3. Convert Decimal to Hexadecimal" << std::endl;
+    std::cout << "4. Convert Hexadecimal to Decimal" << std::endl;
+    std::cout << "5. Demo (Generate and convert random integers to binary)" << std::endl;
+    std::cout << "6. Exit" << std::endl;
+    std::cout << "----------------------------" << std::endl;
+}
+
+// Function for the demo option
+void demoRandomConversion() {
+    // Use C++11 random number generation
+    std::random_device rd; // Obtain a random number from hardware
+    std::mt19937 eng(rd()); // Seed the generator
+    std::uniform_int_distribution<> distr(0, 99); // Define the range [0, 99]
+
+    int randomNum = distr(eng);
+    std::string binaryEquivalent = decimalToBinary(randomNum);
+
+    std::cout << "\nRandom number generated: " << randomNum << std::endl;
+    std::cout << "Binary equivalent: " << binaryEquivalent << std::endl;
+
+    // Verification
+    int verifiedDecimal = binaryToDecimal(binaryEquivalent);
+    if (verifiedDecimal != -1) {
+        std::cout << "Verification (binary to decimal): " << verifiedDecimal << std::endl;
+    } else {
+        std::cout << "Verification failed due to invalid binary string generated (should not happen)." << std::endl;
+    }
+}
+
+int main() {
+    int choice;
+    do {
+        displayMenu();
+        std::cout << "Enter your choice (1-6): ";
+        std::cin >> choice;
+
+        // Clear input buffer in case of non-integer input or leftover newline
+        if (std::cin.fail()) {
+            std::cout << "Invalid input. Please enter a number." << std::endl;
+            std::cin.clear(); // Clear the error flag
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+            continue; // Skip to next loop iteration
+        }
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard any remaining characters on the line
+
+        switch (choice) {
+            case 1: { // Decimal to Binary
+                int decNum;
+                std::cout << "Enter a decimal number: ";
+                std::cin >> decNum;
+                if (std::cin.fail()) {
+                    std::cout << "Invalid input. Please enter an integer." << std::endl;
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                } else {
+                    std::string result = decimalToBinary(decNum);
+                    std::cout << "Binary equivalent: " << result << std::endl;
+                }
+                break;
+            }
+            case 2: { // Binary to Decimal
+                std::string binStr;
+                std::cout << "Enter a binary string: ";
+                std::getline(std::cin, binStr); // Use getline to read entire line
+                int result = binaryToDecimal(binStr);
+                if (result != -1) {
+                    std::cout << "Decimal equivalent: " << result << std::endl;
+                } else {
+                    std::cout << "Invalid input: Please enter a valid binary string." << std::endl;
+                }
+                break;
+            }
+            case 3: { // Decimal to Hexadecimal
+                int decNum;
+                std::cout << "Enter a decimal number: ";
+                std::cin >> decNum;
+                if (std::cin.fail()) {
+                    std::cout << "Invalid input. Please enter an integer." << std::endl;
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                } else {
+                    std::string result = decimalToHexadecimal(decNum);
+                    std::cout << "Hexadecimal equivalent: " << result << std::endl;
+                }
+                break;
+            }
+            case 4: { // Hexadecimal to Decimal
+                std::string hexStr;
+                std::cout << "Enter a hexadecimal string: ";
+                std::getline(std::cin, hexStr); // Use getline to read entire line
+                int result = hexadecimalToDecimal(hexStr);
+                if (result != -1) {
+                    std::cout << "Decimal equivalent: " << result << std::endl;
+                } else {
+                    std::cout << "Invalid input: Please enter a valid hexadecimal string." << std::endl;
+                }
+                break;
+            }
+            case 5: { // Demo
+                demoRandomConversion();
+                break;
+            }
+            case 6: { // Exit
+                std::cout << "Exiting the program. Goodbye!" << std::endl;
+                break;
+            }
+            default: {
+                std::cout << "Invalid choice. Please enter a number between 1 and 6." << std::endl;
+                break;
+            }
+        }
+    } while (choice != 6);
+
+    return 0;
+}
